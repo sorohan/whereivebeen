@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
 import d3 from 'd3'
-import { MAP_PATH as d } from './Map.react'
+import { MAP_PATH as d, MAP_PROJECTION } from './Map.react'
 
 var lineTween = _.curry(function lineTween(line, _datum, _index, _attr) {
     // Save start and end point.
@@ -37,17 +37,16 @@ var lineTween = _.curry(function lineTween(line, _datum, _index, _attr) {
 })
 
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1);
+    var R = 6371 // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1)  // deg2rad below
+    var dLon = deg2rad(lon2-lon1)
     var a =
         Math.sin(dLat/2) * Math.sin(dLat/2) +
         Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
         Math.sin(dLon/2) * Math.sin(dLon/2)
-        ;
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    var d = R * c; // Distance in km
-    return d;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    var d = R * c // Distance in km
+    return d
 }
 
 function deg2rad(deg) {
@@ -56,21 +55,31 @@ function deg2rad(deg) {
 
 class Travel extends Component {
     render() {
-        return <g><path className="arc"/></g>
+        let transform = 'translate(' + MAP_PROJECTION(this.props.to) + ')'
+        let d = new Date(parseInt(this.props.time, 10))
+        let label = (d.getMonth() + 1) + '/' + (d.getFullYear())// todo: use moment?
+        return (
+            <g>
+                <path className="arc"/>
+                <text className="travel-label"
+                    x="5"
+                    transform={transform}
+                    dy=".35em">{label}</text>
+            </g>
+        )
     }
 
     componentDidMount() {
         let { from, to } = this.props
 
-        let distance = getDistanceFromLatLonInKm(from[0], from[1], to[0], to[1]);
+        let distance = getDistanceFromLatLonInKm(from[0], from[1], to[0], to[1])
 
-        let speed = 0.5 // 0.5 sec per 1000 k
+        let speed = 0.3 // 0.5 sec per 1000 k
         let animationTime = Math.round(distance * speed)
 
-        if (animationTime > 1000) {
-            animationTime = 1000;
+        if (animationTime > 500) {
+            animationTime = 500
         }
-console.log(distance, animationTime)
 
         var startPoint = [ from, from ]
         var line = [ from, to ]

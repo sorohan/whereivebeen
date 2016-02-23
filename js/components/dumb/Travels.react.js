@@ -45,7 +45,7 @@ class Travels extends Component {
     setTimer() {
         this.clearTimer()
         // todo: listen to callback on sub-component
-        this.timer = setInterval(this.nextVisibleTravel.bind(this), 1500)
+        this.timer = setInterval(this.nextVisibleTravel.bind(this), 1000)
     }
 
     nextVisibleTravel() {
