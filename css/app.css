@@ -1,0 +1,20 @@
+
+.arc {
+    fill: none;
+    stroke: red;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-dasharray: 2, 5;
+    transition: stroke 2s, stroke-width 2s;
+}
+
+.arc.done {
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.country {
+    fill: #ddd;
+    stroke: #666;
+    stroke-width: 1px;
+}
