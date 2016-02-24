@@ -5,15 +5,18 @@
 //     - Select Location History
 //     - Next
 
+// Download and extract into process-data/
+// mkdir process-data
+
 // Extract to csv
 // jq -r '.locations[] | [.latitudeE7, .longitudeE7, .timestampMs, .accuracy]
-//     | map(tostring) | join(",")' data/Takeout/Location\ History/LocationHistory.json
-//     > data/locations.csv
+//     | map(tostring) | join(",")' process-data/Takeout/Location\ History/LocationHistory.json
+//     > process-data/locations.csv
 
 // Sort:
-// awk -F\, '{print $3 "\t" $1 "\t" $2 "\t" $4}' data/locations.csv
+// awk -F\, '{print $3 "\t" $1 "\t" $2 "\t" $4}' process-data/locations.csv
 //     | sort -fn
-//     > data/locations-sorted.tsv
+//     > process-data/locations-sorted.tsv
 
 // Filter big travels
 // node filter-travels.js > data/travels.csv
@@ -21,15 +24,16 @@
 var geolib = require('geolib');
 var readline = require('linebyline');
 var geocoder = require('geocoder');
-var rl = readline('data/locations-sorted.tsv');
+var rl = readline('process-data/locations-sorted.tsv');
 var _ = require('lodash/fp');
 
-var minDistance = 500; // km
-var minAccuracy = 50;
+var minDistance = 300; // km
+var minAccuracy = 10;
 
 var lastLocation = null;
 var filteredTravels = [];
 
+var count = 0;
 rl.on('line', function (line, linecount) {
     var lineSplit = line.split('\t');
     var location = {
@@ -51,19 +55,23 @@ rl.on('line', function (line, linecount) {
         );
 
         if (distance/1000 > minDistance) {
-            console.log(new Date(parseInt(location.time, 10)));
+            count ++;
 
-            geocoder.reverseGeocode(location.latitude, location.longitude, function(err, data) {
-                location.place = extractPlace(data.results);
-                filteredTravels.push(location);
-            });
+            // Lookup location then add to travels (throttle geocoding).
+            var timeout = (count - (filteredTravels.length+1)) * 250;
+            setTimeout(function() {
+                geocoder.reverseGeocode(location.latitude, location.longitude, function(err, data) {
+                    location.place = extractPlace(data.results);
+                    filteredTravels.push(location);
+                });
+            }, timeout);
 
             lastLocation = location;
         }
     }
 });
 
-rl.on('end', function() {
+var finish = function() {
     filteredTravels.sort(function(a, b) {
         var key = 'time';
         if (a.time < b.time) {
@@ -84,6 +92,19 @@ rl.on('end', function() {
             location.place
         ].join(','));
     });
+};
+
+rl.on('end', function() {
+    var tryFinish = function() {
+        if (filteredTravels.length === count) {
+            finish();
+        }
+        else {
+            setTimeout(tryFinish, 1000);
+        }
+    };
+
+    tryFinish();
 })
 
 function extractPlace(geocoded) {
