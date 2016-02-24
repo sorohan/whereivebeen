@@ -84,7 +84,8 @@ class Travel extends Component {
         var startPoint = [ from, from ]
         var line = [ from, to ]
 
-        var path = d3.select(findDOMNode(this)).select('path')
+        let g = d3.select(findDOMNode(this))
+        var path = g.select('path')
         path.datum({type: 'LineString', coordinates: startPoint})
             .attr('d', d)
         .transition()
@@ -94,6 +95,18 @@ class Travel extends Component {
             .each('end', function(){
                 d3.select(this).attr('class', 'arc done')
             })
+
+        // Create rect for label.
+        var text = g.select('text')
+        var bbox = text.node().getBBox();
+        var padding = 2;
+        var rect = g.insert('rect', 'text')
+            .attr('class', 'travel-label-rect')
+            .attr("x", bbox.x - padding)
+            .attr("y", bbox.y - padding)
+            .attr("width", bbox.width + (padding*2))
+            .attr("height", bbox.height + (padding*2))
+            .attr("transform", 'translate(' + MAP_PROJECTION(to) + ')')
     }
 }
 

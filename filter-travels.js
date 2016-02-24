@@ -43,18 +43,15 @@ rl.on('line', function (line, linecount) {
         accuracy: lineSplit[3]
     };
 
-    if (!lastLocation) {
-        lastLocation = location;
-        return;
-    }
-
     if (location.accuracy < minAccuracy) {
-        var distance = geolib.getDistance(
-                Object.assign({},lastLocation),
-                Object.assign({},location)
-        );
+        if (lastLocation) {
+            var distance = geolib.getDistance(
+                    Object.assign({},lastLocation),
+                    Object.assign({},location)
+            );
+        }
 
-        if (distance/1000 > minDistance) {
+        if (!lastLocation || (distance/1000 > minDistance)) {
             count ++;
 
             // Lookup location then add to travels (throttle geocoding).
