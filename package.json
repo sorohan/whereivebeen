@@ -5,7 +5,7 @@
   "main": "js/app.js",
   "scripts": {
     "start": "watchify -o js/bundle.js -v -d js/app.js",
-    "build": "browserify . -t [envify --NODE_ENV production] | uglifyjs -cm > js/bundle.min.js",
+    "build": "browserify -o js/bundle.js -e js/app.js",
     "test": "jest"
   },
   "keywords": [],
