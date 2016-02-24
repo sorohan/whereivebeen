@@ -57,7 +57,7 @@ class Travel extends Component {
     render() {
         let transform = 'translate(' + MAP_PROJECTION(this.props.to) + ')'
         let d = new Date(parseInt(this.props.time, 10))
-        let label = (d.getMonth() + 1) + '/' + (d.getFullYear())// todo: use moment?
+        let label = this.props.place + ' ' + (d.getMonth() + 1) + '/' + (d.getFullYear())// todo: use moment?
         return (
             <g>
                 <path className="arc"/>

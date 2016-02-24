@@ -11,7 +11,7 @@ class Travels extends Component {
         return (
             <g className="travels">
                 {travels.map((travel, i) => <Travel key={travel.time} from={travel.from}
-                        to={travel.to} time={travel.time} />)}
+                        place={travel.place} to={travel.to} time={travel.time} />)}
 
                 {isLoading &&
                     <circle cx="50" cy="50" r="40" stroke="black" strokeWidth="3" fill="red" />

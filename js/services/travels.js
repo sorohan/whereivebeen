@@ -24,7 +24,8 @@ const getAll = function() {
             travels.push({
                 from: [parseInt(lastPoint[1], 10), parseInt(lastPoint[0],10)],
                 to: [parseInt(point[1], 10),     parseInt(point[0])],
-                time: point[2]
+                time: point[2],
+                place: point[4]
             });
 
             lastPoint = point;
