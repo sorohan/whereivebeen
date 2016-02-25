@@ -1,8 +1,12 @@
 {
   "name": "mymap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "js/app.js",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/sorohan/whereivebeen.git"
+  },
   "scripts": {
     "start": "watchify -o js/bundle.js -v -d js/app.js",
     "build": "browserify -o js/bundle.js -e js/app.js",
