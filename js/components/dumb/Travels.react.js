@@ -45,10 +45,10 @@ class Travels extends Component {
     setTimer() {
         this.clearTimer()
         // todo: listen to callback on sub-component
-        this.timer = setInterval(this.nextVisibleTravel.bind(this), 1000)
+        this.timer = setInterval(this.nextVisibleTravel, 1000)
     }
 
-    nextVisibleTravel() {
+    nextVisibleTravel = () => {
         let nextTravel = this.props.travels[this.state.nextTravelIndex]
         if (nextTravel) {
             let visibleTravels = _.clone(this.state.visibleTravels)

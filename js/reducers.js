@@ -10,15 +10,15 @@ import { combineReducers } from 'redux'
 function map(state = {}, action) {
     switch (action.type) {
         case REQUEST_MAP:
-            return Object.assign({}, state, {
+            return {...state, ...{
                 isLoading: true
-            })
+            }};
             break
         case RECEIVE_MAP:
-            return Object.assign({}, state, {
+            return {...state, ...{
                 isLoading: false,
                 geojson: action.geojson
-            })
+            }};
             break
         default:
             return state;
@@ -28,15 +28,15 @@ function map(state = {}, action) {
 function travels(state = {}, action) {
     switch (action.type) {
         case REQUEST_TRAVELS:
-            return Object.assign({}, state, {
+            return {...state, ...{
                 isLoading: true
-            });
+            }};
             break;
         case RECEIVE_TRAVELS:
-            return Object.assign({}, state, {
+            return {...state, ...{
                 isLoading: false,
                 travels: action.travels
-            })
+            }};
         default:
             return state;
     }
